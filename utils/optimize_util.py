@@ -3,7 +3,6 @@ import torch.nn as nn
 import numpy as np
 from torch import optim
 import torch.nn.functional as F
-from .extract_util import sorted_peaks
 from .stencil_util import stencilOrder, stencil_6, stencil_26
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
@@ -27,7 +26,7 @@ def parse_params(param_fname):
 
 def write_exp_log(log_fname, params):
     import git
-    repo = git.Repo(path = '/ifs/loni/faculty/shi/spectrum/Student_2020/hzhang/scripts/custom_module/FOD_rad_util')
+    repo = git.Repo(path = os.path.dirname(os.path.abspath(__file__)))
     sha = repo.head.object.hexsha
     branch = repo.active_branch.name
     
@@ -70,14 +69,6 @@ def peak_sel(E, peaks, to_numpy=True):
             E_mask = E_mask.cpu()
             E_mask = E_mask.detach().numpy()
     return sel_peak, E_mask
-# def estimate_rad_peaks(sorted_peaks, init_sdf, ctx_mask, params, device, normal=None):
-#     if normal is None:
-#         gradient = np.gradient(init_sdf, axis=(0,1,2), edge_order=2)
-#         normal = np.stack(gradient, axis=-1)
-#         assert normal.shape == ctx_mask.shape + (3,)
-#         normal = normal / np.linalg.norm(normal, axis=3, keepdims=True)
-
-#     return opt_rad_dir(sorted_peaks, normal, params, device, peaks_label=None)
 
 def fill_0_with_normal(peaks, normal, ctx_mask, scale=0.1):
     peaks_norm = np.linalg.norm(peaks, axis=-1)

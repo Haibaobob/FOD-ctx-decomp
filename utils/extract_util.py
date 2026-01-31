@@ -6,12 +6,12 @@ import cvxpy as cp
 from dipy.direction import peaks as Pk
 from dipy.core.sphere import Sphere
 
-def sorted_peaks(FOD_data, max_peaks=5, mask=None, relative_peak_threshold=0.1, min_separation_angle=10, peak_threshold=0.01):
-    _,SV,_, SF = read_mni_obj('/ifshome/hzhang/hzhang/scripts/playground/sphere5120.obj')
-    dipy_sph = Sphere(xyz=SV, faces=SF)
+def sorted_peaks(FOD_data, sphere_V, sphere_F, max_peaks=5, mask=None, relative_peak_threshold=0.1, min_separation_angle=10, peak_threshold=0.01):
+
+    dipy_sph = Sphere(xyz=sphere_V, faces=sphere_F)
     dipy_sph.edges = dipy_sph.edges.astype(np.uint16)
 
-    B = Matrix_B(SV, max_order = 8)
+    B = Matrix_B(sphere_V, max_order = 8)
     shape = FOD_data.shape
     peaks = np.zeros((shape[0], shape[1], shape[2], max_peaks, 3))
     for i in range(shape[0]):
